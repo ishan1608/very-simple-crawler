@@ -1,13 +1,15 @@
-import validators
-from urllib.request import urlopen
-from urllib.parse import urlparse
 from urllib.error import HTTPError
+from urllib.parse import urlparse
+from urllib.request import urlopen
+
 import lxml.html
+import validators
 
 
 class Crawler(object):
     MAX_URLS = 10
     MAX_DEPTH = 5
+    VERBOSE = False
 
     def __init__(self, seed_url):
         if not validators.url(seed_url):
@@ -23,6 +25,8 @@ class Crawler(object):
         Call execute() to start crawling
         :return:
         """
+        if self.VERBOSE:
+            print('Crawling started. Seed URL: {}'.format(self.seed_url))
         url_store = self._crawl_url(self.seed_url, 1)
         self.done(url_store)
 
@@ -33,19 +37,24 @@ class Crawler(object):
         :param result: Result dictionary
         :return: None
         """
-        raise NotImplementedError('')
+        raise NotImplementedError('You must provide an implementation for done()')
 
     def _crawl_url(self, page_url, depth):
         self._parsed_urls.append(page_url)
         self._url_count += 1
 
         try:
+            if self.VERBOSE:
+                print('{} Crawling url: {}'.format(self._url_count, page_url))
             content = urlopen(page_url).read()
         except HTTPError as error:
+            error_message = '{}: {}'.format(error.code, error.msg)
+            if self.VERBOSE:
+                print('{} Error accessing: {}\n{}'.format(self._url_count, page_url, error_message))
             return {
                 'url': page_url,
                 'file': None,
-                'error': '{}: {}'.format(error.code, error.msg)
+                'error': error_message
             }
 
         file_name = 'html/page-{}.html'.format(self._url_count)
