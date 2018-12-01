@@ -12,6 +12,10 @@ class Crawler(object):
     VERBOSE = False
 
     def __init__(self, seed_url):
+        """
+        Crawler for the seed_url
+        :param seed_url: URL to start crawling from
+        """
         if not validators.url(seed_url):
             raise ValueError("URL provided isn't valid")
         self.seed_url = seed_url
@@ -62,7 +66,7 @@ class Crawler(object):
         file.write(content)
         file.close()
 
-        base_url = self.get_base_url(page_url)
+        base_url = self._get_base_url(page_url)
 
         url_store = {
             'url': page_url,
@@ -99,6 +103,6 @@ class Crawler(object):
         return self._crawl_url(link, depth + 1)
 
     @staticmethod
-    def get_base_url(url):
+    def _get_base_url(url):
         parsed_uri = urlparse(url)
         return '{uri.scheme}://{uri.netloc}'.format(uri=parsed_uri)
