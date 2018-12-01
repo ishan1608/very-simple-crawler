@@ -85,10 +85,16 @@ class Crawler(object):
             return
 
         if depth >= self.MAX_DEPTH:
-            return
+            return {
+                'url': link,
+                'status': 'Maximum depth({}) reached'.format(depth)
+            }
 
-        if self._url_count > self.MAX_URLS:
-            return
+        if self._url_count >= self.MAX_URLS:
+            return {
+                'url': link,
+                'status': 'Maximum urls({}) crawled'.format(self._url_count)
+            }
 
         return self._crawl_url(link, depth + 1)
 
