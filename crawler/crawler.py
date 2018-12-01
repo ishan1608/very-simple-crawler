@@ -6,18 +6,16 @@ import lxml.html
 
 
 class Crawler(object):
-    URL_PER_PAGE_LIMIT = 10
+    MAX_URLS = 10
+    MAX_DEPTH = 5
 
-    def __init__(self, seed_url, depth=5):
+    def __init__(self, seed_url):
         if not validators.url(seed_url):
             raise ValueError("URL provided isn't valid")
         self.seed_url = seed_url
-        self.depth = depth
 
         # Keeping track of pages visited
         self._url_count = 0
-        self._max_urls = self.URL_PER_PAGE_LIMIT * depth
-
         self._parsed_urls = []
 
     def execute(self):
@@ -77,10 +75,10 @@ class Crawler(object):
         if link in self._parsed_urls:
             return
 
-        if depth >= self.depth:
+        if depth >= self.MAX_DEPTH:
             return
 
-        if self._url_count > self._max_urls:
+        if self._url_count > self.MAX_URLS:
             return
 
         return self._crawl_url(link, depth + 1)
