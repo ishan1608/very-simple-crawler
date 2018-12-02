@@ -21,4 +21,4 @@ Example:
     wired_crawler = MyCrawler('https://www.wired.com/')
     wired_crawler.execute()
 
-An example is also provided in `main.py`
+An example is also provided in `example/main.py`
