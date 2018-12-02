@@ -76,7 +76,7 @@ class Crawler(object):
 
         dom = lxml.html.fromstring(content)
         links = dom.xpath('//a/@href')
-        for link in [link.split('#')[0] for link in links]:
+        for link in links:
             link_result = self._process_link(link, depth, base_url)
             if link_result is not None:
                 url_store['links'].append(link_result)
@@ -84,6 +84,7 @@ class Crawler(object):
         return url_store
 
     def _process_link(self, link, depth, base_url):
+        link = link.split('#')[0]
         link = base_url + link if (link.startswith('/') or link == '') else link
         if link in self._parsed_urls:
             return
